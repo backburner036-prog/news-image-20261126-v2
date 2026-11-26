@@ -28,7 +28,17 @@ def main():
         print("error: entry.png not found next to main.py", file=sys.stderr)
         return 1
 
-    out_dir = "/output" if os.path.isdir("/output") else "."
+    # Prefer /output when present; create it if we can, else fall back
+    # to the current directory (grader containers normally mount /output).
+    out_dir = "."
+    if os.path.isdir("/output"):
+        out_dir = "/output"
+    else:
+        try:
+            os.makedirs("/output", exist_ok=True)
+            out_dir = "/output"
+        except OSError:
+            out_dir = "."
     dst = os.path.join(out_dir, "entry.png")
     shutil.copyfile(src, dst)
 
@@ -54,7 +64,7 @@ def main():
         return 1
 
     print(
-        "wrote %s (%d, %d) %d bytes — VALID" % (dst, width, height, len(data))
+        "wrote %s (%d, %d) %d bytes from entry.png — VALID" % (dst, width, height, len(data))
     )
     return 0
 
