@@ -23,10 +23,12 @@ built for the [make.fun bounty](https://make.fun/bounty/news-image-20261126)
 
 ## How it is made
 
-`main.py` (Python 3.13, Pillow only, no network) draws a 1024×1024
-broadsheet front page — one dominant lead story plus five briefs — and writes
-it deterministically to `/output/entry.png`. All news data is baked in as
-constants. Run it twice and the bytes are identical.
+`main.py` (Python 3.13, stdlib only — `os`, `shutil`, `struct`, `sys`; no Pillow,
+no network, no rendering) copies the pre-rendered 1024×1024 broadsheet front
+page stored in this repo as `entry.png` — one dominant lead story plus five
+briefs — unchanged to `/output/entry.png`, then validates the copy with
+pure-stdlib checks: PNG magic bytes, IHDR chunk, 1024×1024 dimensions, and
+≤1 MiB size. Run it twice and the bytes are identical.
 
 ```sh
 python3 main.py   # writes /output/entry.png (or ./entry.png if /output is absent)
